@@ -1,0 +1,16 @@
+{
+  "name": "nurassyl/satom-form",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Nurasyl Aldan",
+      "email": "nurassyl.aldan@gmail.com"
+    }
+  ],
+  "require": {},
+  "require-dev": {
+    "phpdocumentor/phpdocumentor": "^2.9",
+    "phpunit/phpunit": "^9"
+  }
+}
