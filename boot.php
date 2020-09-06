@@ -20,6 +20,13 @@ mb_regex_encoding($encoding);
 
 
 /**
+ * Error reporting
+ */
+
+error_reporting(E_ALL & ~E_NOTICE);
+
+
+/**
  * Autoload classes
  */
 
@@ -28,4 +35,11 @@ spl_autoload_register(function ($class_name) {
 
 	include_once __DIR__ . '/' . $class_name . '.php';
 });
+
+
+/**
+ * Capitalize helper
+ */
+
+require_once(__DIR__ . '/helpers/mb_capitalize.php');
 
