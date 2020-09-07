@@ -289,6 +289,14 @@ final class FormTest extends TestCase
 			$form->age,
 			0
 		);
+
+		$form = new MyForm([
+			'age' => ' ',
+		]);
+		$this->assertEquals(
+			$form->age,
+			null,
+		);
 	}
 
 	public function testString()
@@ -331,9 +339,10 @@ final class FormTest extends TestCase
 		$form = new MyForm([
 			'birthday' => '21.11.1996',
 		]);
-		$this->assertEquals(
-			date('Y-m-d', $form->birthday),
-			'1996-11-21'
+
+		$this->assertInstanceOf(
+			DateTime::class,
+			$form->birthday
 		);
 
 		$form = new MyForm([

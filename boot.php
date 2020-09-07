@@ -20,6 +20,13 @@ mb_regex_encoding($encoding);
 
 
 /**
+ * Set datetime parameters
+ */
+
+date_default_timezone_set('UTC');
+
+
+/**
  * Error reporting
  */
 

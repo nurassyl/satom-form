@@ -6,7 +6,6 @@
  * @author Nurasyl Aldan <nurassyl.aldan@gmail.com>
  */
 
-namespace forms;
 
 /**
  * Form
@@ -14,25 +13,19 @@ namespace forms;
 abstract class Form
 {
 	/**
-	 * Type
-	 *
-	 * @var array $type
+	 * Types
 	 */
-	private $type;
+	private $__types;
 
 	/**
 	 * Normalize
-	 *
-	 * @var array $normalize
 	 */
-	private $normalize;
+	private $__normalize;
 
 	/**
 	 * Data
-	 *
-	 * @var array $data
 	 */
-	private $data;
+	private $__data;
 
 	/**
 	 * Constructor
@@ -41,12 +34,12 @@ abstract class Form
 	 */
 	public function __construct(array $data)
 	{
-		$this->data = $data;
-		$this->construct($this->data);
+		$this->__data = $data;
+		$this->construct($this->__data);
 	}
 
 	/**
-	 * Set types and normalize input data.
+	 * Set types and normalize input data
 	 *
 	 * @param array $data Data
 	 *
@@ -54,8 +47,8 @@ abstract class Form
 	 */
 	private function construct(array $data): void
 	{
-		$this->type = method_exists($this, 'type') ? $this->type() : [];
-		$this->normalize = method_exists($this, 'normalize') ? $this->normalize() : [];
+		$this->__types = method_exists($this, 'types') ? $this->types() : [];
+		$this->__normalize = method_exists($this, 'normalize') ? $this->normalize() : [];
 
 		foreach(array_keys(get_object_vars($this)) as $attr) {
 			if(isset($data[$attr]) && !is_null($data[$attr])) {
@@ -63,17 +56,25 @@ abstract class Form
 				$this->$attr = $data[$attr];
 
 				// set type
-				if($this->type[$attr] === 'string' || $this->type[$attr] === 'str') {
+				if($this->__types[$attr] === 'string' || $this->__types[$attr] === 'str') {
 					if(is_string($this->$attr) && trim($this->$attr) === '') {
 						$this->$attr = null;
 					} else {
 						$this->$attr = (string) $this->$attr;
 					}
-				} else if($this->type[$attr] === 'integer' || $this->type[$attr] === 'int') {
-					$this->$attr = (int) $this->$attr;
-				} else if($this->type[$attr] === 'float' || $this->type[$attr] === 'double' || $this->type[$attr] === 'real') {
-					$this->$attr = (float) $this->$attr;
-				} else if($this->type[$attr] === 'boolean' || $this->type[$attr] === 'bool') {
+				} else if($this->__types[$attr] === 'integer' || $this->__types[$attr] === 'int') {
+					if(is_string($this->$attr) && trim($this->$attr) === '') {
+						$this->$attr = null;
+					} else {
+						$this->$attr = (int) $this->$attr;
+					}
+				} else if($this->__types[$attr] === 'float' || $this->__types[$attr] === 'double' || $this->__types[$attr] === 'real') {
+					if(is_string($this->$attr) && trim($this->$attr) === '') {
+						$this->$attr = null;
+					} else {
+						$this->$attr = (int) $this->$attr;
+					}
+				} else if($this->__types[$attr] === 'boolean' || $this->__types[$attr] === 'bool') {
 					if(is_string($this->$attr)) {
 						$this->$attr = trim($this->$attr);
 						if($this->$attr === 'true' || $this->$attr === '1' || $this->$attr === 'on' || $this->$attr === 'yes') {
@@ -84,7 +85,7 @@ abstract class Form
 					} else {
 						$this->$attr = (bool) $this->$attr;
 					}
-				} else if($this->type[$attr] === 'date' || $this->type[$attr] === 'datetime' || $this->type[$attr] === 'time') {
+				} else if($this->__types[$attr] === 'date' || $this->__types[$attr] === 'datetime' || $this->__types[$attr] === 'time') {
 					if(is_string($this->$attr) && trim($this->$attr) === '') {
 						$this->$attr = null;
 					}
@@ -93,6 +94,8 @@ abstract class Form
 
 					if($val) {
 						$this->$attr = $val;
+						$this->$attr = date('Y-m-d H:i:s', $this->$attr);
+						$this->$attr = new DateTime($this->$attr);
 					} else {
 						$this->$attr = null;
 					}
@@ -101,21 +104,21 @@ abstract class Form
 				}
 
 				// normalize
-				if(is_array($this->normalize[$attr]) && is_string($this->$attr)) {
+				if(is_array($this->__normalize[$attr]) && is_string($this->$attr)) {
 					// notrim
-					if(in_array('trim', $this->normalize[$attr])) {
+					if(in_array('trim', $this->__normalize[$attr])) {
 						$this->$attr = trim($this->$attr);
 					}
 					// lowercase
-					if(in_array('lowercase', $this->normalize[$attr])) {
+					if(in_array('lowercase', $this->__normalize[$attr])) {
 						$this->$attr = mb_strtolower($this->$attr);
 					}
 					// uppercase
-					else if(in_array('uppercase', $this->normalize[$attr])) {
+					else if(in_array('uppercase', $this->__normalize[$attr])) {
 						$this->$attr = mb_strtoupper($this->$attr);
 					}
 					// capitalize
-					else if(in_array('capitalize', $this->normalize[$attr])) {
+					else if(in_array('capitalize', $this->__normalize[$attr])) {
 						$this->$attr = mb_capitalize($this->$attr);
 					}
 				}
@@ -132,17 +135,15 @@ abstract class Form
 	}
 
 	/**
-	 * Example is here ./tests/MyForm.php
+	 * Get data
 	 *
 	 * @return array
 	 */
-	abstract protected function type(): array;
-
-	/**
-	 * Example is here ./tests/MyForm.php
-	 *
-	 * @return array
-	 */
-	abstract protected function normalize(): array;
+	public function getData(): array
+	{
+		return array_filter(get_object_vars($this), function($k) {
+			return $k !== '__normalize' && $k !== '__types' && $k !== '__data';
+		}, ARRAY_FILTER_USE_KEY);
+	}
 }
 

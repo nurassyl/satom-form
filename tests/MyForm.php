@@ -8,10 +8,10 @@
 
 namespace tests;
 
-use forms\Form;
-
-class MyForm extends Form
+class MyForm extends \Form
 {
+	use \validators\Primary;
+
 	public $first_name;
 	public $last_name;
 	public $middle_name;
@@ -24,7 +24,7 @@ class MyForm extends Form
 	public $is_admin;
 	public $created_at;
 
-	protected function type(): array
+	protected function types(): array
 	{
 		return [
 			'username' => 'string',
@@ -59,6 +59,26 @@ class MyForm extends Form
 			'email' => [
 				'trim',
 				'uppercase',
+			],
+		];
+	}
+
+	protected function rules(): array
+	{
+		return [
+			'username' => [
+				'required' => true,
+				'min' => 5,
+				'max' => 36,
+			],
+			'age' => [
+				'min' => 0,
+				'max' => 160,
+			],
+			'birthday' => [
+				'required' => true,
+				'min' => new \DateTime('1900-01-01'),
+				'max' => new \DateTime('2016-12-31'),
 			],
 		];
 	}

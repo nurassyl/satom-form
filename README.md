@@ -1,4 +1,4 @@
-# Satom form
+# SatomForm
 
 
 ### Requirements:
@@ -21,6 +21,5 @@ Test
 Generate docs
 
 ```bash
-./vendor/bin/phpdoc -d ./forms/ -t ./docs/api
-./vendor/bin/phpdoc -d ./validators/ -t ./docs/api
+./vendor/bin/phpdoc -f ./Form.php -d ./validators/ -t ./docs/api
 ```
