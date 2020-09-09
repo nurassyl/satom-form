@@ -36,6 +36,18 @@ final class ValidatorTest extends TestCase
 			in_array('required', $form->getErrors()['username']),
 			true
 		);
+
+		$form = new MyForm([
+			'age' => null,
+		]);
+		$this->assertEquals(
+			$form->validate(),
+			false
+		);
+		$this->assertEquals(
+			array_key_exists('age', $form->getErrors()) && in_array('required', $form->getErrors()['age']),
+			false
+		);
 	}
 
 	public function testMin()

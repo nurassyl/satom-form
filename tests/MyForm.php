@@ -7,10 +7,11 @@
  */
 
 namespace tests;
+use validators\rules\In;
 
 class MyForm extends \Form
 {
-	use \validators\Primary;
+	use \validators\Validator;
 
 	public $first_name;
 	public $last_name;
@@ -67,7 +68,7 @@ class MyForm extends \Form
 	{
 		return [
 			'username' => [
-				'required' => true,
+				'required',
 				'min' => 5,
 				'max' => 36,
 			],
@@ -76,9 +77,16 @@ class MyForm extends \Form
 				'max' => 160,
 			],
 			'birthday' => [
-				'required' => true,
+				'required',
 				'min' => new \DateTime('1900-01-01'),
 				'max' => new \DateTime('2016-12-31'),
+			],
+			'email' => [
+				'required',
+				In::rule([
+					'nurassyl.aldan@gmail.com',
+					'nurassyl.aldan@outlook.com',
+				]),
 			],
 		];
 	}

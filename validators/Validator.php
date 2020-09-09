@@ -9,9 +9,9 @@
 namespace validators;
 
 /**
- * Primary validator
+ * Validator
  */
-trait Primary
+trait Validator
 {
 	/**
 	 * Rules
@@ -33,54 +33,62 @@ trait Primary
 		$this->__rules = method_exists($this, 'rules') ? $this->rules() : [];
 
 		foreach($this->getData() as $attr => $val) {
-			if(is_array($this->__rules[$attr])) {
+			$rules = $this->__rules[$attr];
+
+			if(is_array($rules)) {
 				// $attr has rules
 
 				// required rule
-				if(array_key_exists('required', $this->__rules[$attr]) && $this->__rules[$attr]['required'] == true && $val === null) {
+				if(in_array('required', $rules, true) && $val === null) {
 					$this->__errors[$attr][] = 'required';
 				} else {
 					if($val !== null) {
 						// min rule
-						if(!is_null($this->__rules[$attr]['min'])) {
+						if(!is_null($rules['min'])) {
 							// string type
 							if(is_string($val)) {
-								if(mb_strlen($val) < $this->__rules[$attr]['min']) {
+								if(mb_strlen($val) < $rules['min']) {
 									$this->__errors[$attr][] = 'min';
 								}
 							}
 							// integer or float type
 							else if(is_integer($val) || is_float($val)) {
-								if($val < $this->__rules[$attr]['min']) {
+								if($val < $rules['min']) {
 									$this->__errors[$attr][] = 'min';
 								}
 							}
 							// datetime type
 							else if($val instanceof \DateTime) {
-								if($val->getTimestamp() < $this->__rules[$attr]['min']->getTimestamp()) {
+								if($val->getTimestamp() < $rules['min']->getTimestamp()) {
 									$this->__errors[$attr][] = 'min';
 								}
 							}
 						}
 						// max rule
-						if(!is_null($this->__rules[$attr]['max'])) {
+						if(!is_null($rules['max'])) {
 							// string type
 							if(is_string($val)) {
-								if(mb_strlen($val) > $this->__rules[$attr]['max']) {
+								if(mb_strlen($val) > $rules['max']) {
 									$this->__errors[$attr][] = 'max';
 								}
 							}
 							// integer or float type
 							else if(is_integer($val) || is_float($val)) {
-								if($val > $this->__rules[$attr]['max']) {
+								if($val > $rules['max']) {
 									$this->__errors[$attr][] = 'max';
 								}
 							}
 							// datetime type
 							else if($val instanceof \DateTime) {
-								if($val->getTimestamp() > $this->__rules[$attr]['max']->getTimestamp()) {
+								if($val->getTimestamp() > $rules['max']->getTimestamp()) {
 									$this->__errors[$attr][] = 'max';
 								}
+							}
+						}
+
+						foreach($rules as $rule) {
+							if($rule instanceof Rule) {
+								$rule->setAttr($attr)->setValue($val)->setErrors($this->__errors)->validate();
 							}
 						}
 					}
