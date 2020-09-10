@@ -44,7 +44,7 @@ interface iRule {
 /**
  * Rule class
  */
-class Rule implements iRule
+abstract class Rule implements iRule
 {
 	/**
 	 * Rule
