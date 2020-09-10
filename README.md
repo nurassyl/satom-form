@@ -11,6 +11,12 @@
 
 ---
 
+### See example
+
+[example.php](example.php)
+
+---
+
 Test
 
 ```bash
