@@ -6,8 +6,8 @@
 - PHP v7.3
   - PHP extensions:
     - mbstring
-    - dom (for unittest)
-- GraphViz (for generating phpdoc)
+    - dom (for unittest), in development mode
+- GraphViz (for generating phpdoc), in development mode
 
 ---
 

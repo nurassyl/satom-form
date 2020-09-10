@@ -9,7 +9,7 @@
 use PHPUnit\Framework\TestCase;
 use validators\rules\In;
 
-class MyForm extends \Form
+class InForm extends \Form
 {
 	use \validators\Validator;
 	public $email;
@@ -31,13 +31,13 @@ final class InTest extends TestCase
 {
 	public function testRule(): void
 	{
-		$myform = new MyForm([
+		$myform = new InForm([
 			'email' => 'nurassyl.aldan@icloud.com',
 		]);
 		$this->assertFalse($myform->validate());
 		$this->assertContains('in', $myform->getErrors()['email']);
 
-		$myform = new MyForm([
+		$myform = new InForm([
 			'email' => 'nurassyl.aldan@gmail.com',
 		]);
 		$this->assertTrue($myform->validate());

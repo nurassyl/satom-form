@@ -45,7 +45,7 @@ spl_autoload_register(function ($class_name) {
 
 
 /**
- * Capitalize helper
+ * Helpers
  */
 
 require_once(__DIR__ . '/helpers/mb_capitalize.php');
